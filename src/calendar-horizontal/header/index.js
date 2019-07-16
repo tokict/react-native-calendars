@@ -128,10 +128,10 @@ class CalendarHeader extends Component {
         />
       );
     }
-
+    return null;
     return (
       <View style={this.props.style}>
-        <View style={[this.style.header]}>
+        <View style={this.style.header}>
           {leftArrow}
           <View style={{ flexDirection: "row" }}>
             <Text

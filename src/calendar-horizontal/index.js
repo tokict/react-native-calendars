@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, ViewPropTypes, Text } from "react-native";
+import { View, ViewPropTypes } from "react-native";
 import PropTypes from "prop-types";
 
 import XDate from "xdate";
@@ -41,8 +41,6 @@ class Calendar extends Component {
     hideArrows: PropTypes.bool,
     // Display loading indicador. Default = false
     displayLoadingIndicator: PropTypes.bool,
-    // Is the calendar a horizontal swipe type. Default = false
-    horizontal: PropTypes.bool,
     // Do not show days of other months in month page. Default = false
     hideExtraDays: PropTypes.bool,
     // Handler which gets executed on day press. Default = undefined
@@ -70,7 +68,6 @@ class Calendar extends Component {
     onPressArrowLeft: PropTypes.func,
     // Handler which gets executed when press arrow icon left. It receive a callback can go next month
     onPressArrowRight: PropTypes.func,
-
     // Style passed to the header
     headerStyle: PropTypes.oneOfType([
       PropTypes.object,
@@ -190,37 +187,9 @@ class Calendar extends Component {
     const DayComp = this.getDayComponent();
     const date = day.getDate();
     const dateAsObject = xdateToData(day);
-    const isFirstInMonth = XDate(day).getDate() === 1;
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          marginLeft: isFirstInMonth ? 50 : null
-        }}
-        key={id}
-      >
-        {isFirstInMonth && this.props.horizontal && (
-          <View>
-            <Text style={{ position: "absolute", left: -50 }}>
-              {XDate(day).toString("MMM")}
-            </Text>
-            <Text style={{ position: "absolute", left: -50, top: 15 }}>
-              {XDate(day).toString("yy") + "'"}
-            </Text>
-          </View>
-        )}
-        {this.props.horizontal && (
-          <Text
-            style={{
-              color: this.props.theme.dayTextColor,
-              alignSelf: "center"
-            }}
-          >
-            {XDate(day).toString("ddd")}
-          </Text>
-        )}
 
+    return (
+      <View style={{ flex: 1, alignItems: "center" }} key={id}>
         <DayComp
           testID={`${SELECT_DATE_SLOT}-${dateAsObject.dateString}`}
           state={state}
@@ -283,7 +252,6 @@ class Calendar extends Component {
 
   renderWeek(days, id) {
     const week = [];
-
     days.forEach((day, id2) => {
       week.push(this.renderDay(day, id2));
     }, this);
@@ -293,15 +261,7 @@ class Calendar extends Component {
     }
 
     return (
-      <View
-        style={[
-          this.style.week,
-          {
-            flex: this.props.horizontal ? 1 : null
-          }
-        ]}
-        key={id}
-      >
+      <View style={this.style.week} key={id}>
         {week}
       </View>
     );
@@ -310,13 +270,9 @@ class Calendar extends Component {
   render() {
     const days = dateutils.page(this.state.currentMonth, this.props.firstDay);
     const weeks = [];
-
-    while (this.props.horizontal ? days.length > 7 : days.length > 0) {
-      const d = days.splice(0, 7);
-
-      weeks.push(this.renderWeek(d, weeks.length));
+    while (days.length) {
+      weeks.push(this.renderWeek(days.splice(0, 7), weeks.length));
     }
-
     let indicator;
     const current = parseDate(this.props.current);
     if (current) {
@@ -333,18 +289,9 @@ class Calendar extends Component {
         indicator = true;
       }
     }
-    return this.props.horizontal ? (
-      <View
-        style={{
-          flexDirection: "row",
-          width: 1400
-        }}
-      >
-        {weeks}
-      </View>
-    ) : (
+    return (
       <View style={[this.style.container, this.props.style]}>
-        <CalendarHeader
+        {/* <CalendarHeader
           style={this.props.headerStyle}
           theme={this.props.theme}
           hideArrows={this.props.hideArrows}
@@ -358,8 +305,7 @@ class Calendar extends Component {
           weekNumbers={this.props.showWeekNumbers}
           onPressArrowLeft={this.props.onPressArrowLeft}
           onPressArrowRight={this.props.onPressArrowRight}
-        />
-
+        /> */}
         <View style={this.style.monthView}>{weeks}</View>
       </View>
     );

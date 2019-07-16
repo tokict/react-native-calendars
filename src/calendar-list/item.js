@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
-import Calendar from '../calendar';
-import styleConstructor from './style';
-
+import React, { Component } from "react";
+import { Text, View } from "react-native";
+import Calendar from "../calendar";
+import styleConstructor from "./style";
 
 class CalendarListItem extends Component {
   static defaultProps = {
@@ -18,7 +17,11 @@ class CalendarListItem extends Component {
   shouldComponentUpdate(nextProps) {
     const r1 = this.props.item;
     const r2 = nextProps.item;
-    return r1.toString('yyyy MM') !== r2.toString('yyyy MM') || !!(r2.propbump && r2.propbump !== r1.propbump);
+
+    return (
+      r1.toString("yyyy MM") !== r2.toString("yyyy MM") ||
+      !!(r2.propbump && r2.propbump !== r1.propbump)
+    );
   }
 
   onPressArrowLeft = (_, month) => {
@@ -30,7 +33,7 @@ class CalendarListItem extends Component {
       monthClone.addMonths(-1);
       this.props.scrollToMonth(monthClone);
     }
-  }
+  };
 
   onPressArrowRight = (_, month) => {
     const monthClone = month.clone();
@@ -41,7 +44,7 @@ class CalendarListItem extends Component {
       monthClone.addMonths(1);
       this.props.scrollToMonth(monthClone);
     }
-  }
+  };
 
   render() {
     const row = this.props.item;
@@ -50,7 +53,14 @@ class CalendarListItem extends Component {
       return (
         <Calendar
           theme={this.props.theme}
-          style={[{height: this.props.calendarHeight, width: this.props.calendarWidth}, this.style.calendar, this.props.style]}
+          style={[
+            {
+              height: this.props.calendarHeight
+            },
+            this.style.calendar,
+            this.props.style
+          ]}
+          horizontal={this.props.horizontal}
           current={row}
           hideArrows={this.props.hideArrows}
           hideExtraDays={this.props.hideExtraDays}
@@ -69,16 +79,34 @@ class CalendarListItem extends Component {
           disabledByDefault={this.props.disabledByDefault}
           showWeekNumbers={this.props.showWeekNumbers}
           renderArrow={this.props.renderArrow}
-          onPressArrowLeft={this.props.horizontal ? this.onPressArrowLeft : this.props.onPressArrowLeft}
-          onPressArrowRight={this.props.horizontal ? this.onPressArrowRight : this.props.onPressArrowRight}
-          headerStyle={this.props.horizontal ? this.props.headerStyle : undefined}
-        />);
+          onPressArrowLeft={
+            this.props.horizontal
+              ? this.onPressArrowLeft
+              : this.props.onPressArrowLeft
+          }
+          onPressArrowRight={
+            this.props.horizontal
+              ? this.onPressArrowRight
+              : this.props.onPressArrowRight
+          }
+          headerStyle={
+            this.props.horizontal ? this.props.headerStyle : undefined
+          }
+        />
+      );
     } else {
       const text = row.toString();
-
       return (
-        <View style={[{height: this.props.calendarHeight, width: this.props.calendarWidth}, this.style.placeholder]}>
-          <Text allowFontScaling={false} style={this.style.placeholderText}>{text}</Text>
+        <View
+          style={[
+            {
+              height: this.props.calendarHeight
+            }
+          ]}
+        >
+          <Text allowFontScaling={false} style={this.style.placeholderText}>
+            {text}
+          </Text>
         </View>
       );
     }
