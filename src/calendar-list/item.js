@@ -104,9 +104,9 @@ class CalendarListItem extends Component {
             }
           ]}
         >
-          <Text allowFontScaling={false} style={this.style.placeholderText}>
+          {/* <Text allowFontScaling={false} style={this.style.placeholderText}>
             {text}
-          </Text>
+          </Text> */}
         </View>
       );
     }
