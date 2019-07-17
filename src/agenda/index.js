@@ -283,6 +283,7 @@ export default class AgendaView extends Component {
     const day = parseDate(d);
     this.setState({
       calendarScrollable: false,
+      horizontal: true,
       selectedDay: day.clone()
     });
     if (this.props.onCalendarToggled) {
