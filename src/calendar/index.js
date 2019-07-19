@@ -337,6 +337,8 @@ class Calendar extends Component {
       <View
         style={{
           flexDirection: "row",
+
+          marginTop: 20,
           width: 1400
         }}
       >
