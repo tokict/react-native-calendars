@@ -283,6 +283,7 @@ export default class AgendaView extends Component {
     const day = parseDate(d);
     this.setState({
       calendarScrollable: false,
+      horizontal: true,
       selectedDay: day.clone()
     });
     if (this.props.onCalendarToggled) {
@@ -389,7 +390,7 @@ export default class AgendaView extends Component {
 
     const contentTranslate = this.state.scrollY.interpolate({
       inputRange: [0, agendaHeight + 155],
-      outputRange: [0, os === "android" ? agendaHeight - 90 : agendaHeight / 2],
+      outputRange: [0, agendaHeight / 2],
       extrapolate: "clamp"
     });
 
@@ -449,7 +450,10 @@ export default class AgendaView extends Component {
         <Animated.View
           style={[
             headerStyle,
-            { backgroundColor: this.props.theme.calendarBackground }
+            {
+              backgroundColor: this.props.theme.calendarBackground,
+              paddingTop: this.state.horizontal ? agendaHeight * 0.55 : 0
+            }
           ]}
         >
           <Animated.View
@@ -468,6 +472,7 @@ export default class AgendaView extends Component {
                 );
               }}
               horizontal={this.state.horizontal}
+              calendarHeight={this.state.horizontal ? 360 : 325}
               calendarWidth={this.viewWidth}
               theme={this.props.theme}
               onVisibleMonthsChange={this.onVisibleMonthsChange.bind(this)}
