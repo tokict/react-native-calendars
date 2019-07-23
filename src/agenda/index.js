@@ -389,7 +389,7 @@ export default class AgendaView extends Component {
     });
 
     const contentTranslate = this.state.scrollY.interpolate({
-      inputRange: [0, agendaHeight + 155],
+      inputRange: [0, agendaHeight * 1.28],
       outputRange: [0, agendaHeight / 2],
       extrapolate: "clamp"
     });
