@@ -19,6 +19,7 @@ import CalendarListItem from "./item";
 import CalendarHeader from "../calendar/header/index";
 
 const { width } = Dimensions.get("window");
+const os = Platform.OS;
 
 class CalendarList extends Component {
   static propTypes = {
@@ -67,7 +68,7 @@ class CalendarList extends Component {
     super(props);
     this.style = styleConstructor(props.theme);
     this.viewabilityConfig = {
-      itemVisiblePercentThreshold: 10
+      itemVisiblePercentThreshold: 1
     };
 
     const rows = [];
@@ -128,11 +129,22 @@ class CalendarList extends Component {
         .setDate(1)
         .diffMonths(day.clone().setDate(1))
     );
+
+    const daysInMonth = dateutils.month(d);
     const size = this.props.horizontal
       ? this.props.calendarWidth
       : this.props.calendarHeight;
-    let scrollAmount =
-      size * this.props.pastScrollRange + diffMonths * size + (offset || 0);
+    const dayWidth =
+      this.props.calendarWidth / daysInMonth[daysInMonth.length - 1].getDate();
+
+    const horizontalOffset = dayWidth * day.getDate() - (width + dayWidth) / 2;
+    console.debug(horizontalOffset);
+    // Horizontal needs to count number of days and multiply it with their width to add to scroll instead of just making it half the calendar height
+    let scrollAmount = this.props.horizontal
+      ? size * this.props.pastScrollRange + diffMonths * size + horizontalOffset
+      : size * this.props.pastScrollRange + diffMonths * size + (offset || 0);
+
+    console.debug(horizontalOffset);
 
     if (!this.props.horizontal) {
       let week = 0;
@@ -145,7 +157,11 @@ class CalendarList extends Component {
         }
       }
     }
-    this.listView.scrollToOffset({ offset: scrollAmount, animated });
+
+    this.listView.scrollToOffset({
+      offset: scrollAmount,
+      animated: true
+    });
   }
 
   scrollToMonth(m) {
@@ -162,7 +178,7 @@ class CalendarList extends Component {
       : this.props.calendarHeight;
     const scrollAmount = size * this.props.pastScrollRange + diffMonths * size;
 
-    this.listView.scrollToOffset({ offset: scrollAmount, animated: false });
+    this.listView.scrollToOffset({ offset: scrollAmount, animated: true });
   }
 
   componentWillReceiveProps(props) {
@@ -190,7 +206,6 @@ class CalendarList extends Component {
     });
   }
 
-  // this causes flickering and rearranging on scrolling
   onViewableItemsChanged({ viewableItems }) {
     function rowIsCloseToViewable(index, distance) {
       for (let i = 0; i < viewableItems.length; i++) {
@@ -230,6 +245,7 @@ class CalendarList extends Component {
 
     this.setState({
       rows: newrows,
+
       currentMonth: parseDate(visibleMonths[0])
     });
   }
@@ -238,7 +254,7 @@ class CalendarList extends Component {
     return (
       <View
         style={{
-          width: this.props.horizontal ? 1400 : undefined
+          width: this.props.calendarWidth
         }}
       >
         <CalendarListItem
@@ -339,13 +355,8 @@ class CalendarList extends Component {
   }
 
   render() {
-    const itemLayProp = {};
-    if (!this.props.horizontal) {
-      itemLayProp["getItemLayout"] = this.getItemLayout;
-    }
-
     return (
-      <View>
+      <View style={{ flex: this.props.horizontal ? 0 : 1 }}>
         <FlatList
           onLayout={this.onLayout}
           ref={c => (this.listView = c)}
@@ -371,8 +382,8 @@ class CalendarList extends Component {
               ? this.getMonthIndex(this.state.openDate)
               : false
           }
-          props={{ ...itemLayProp }}
           scrollsToTop={this.props.scrollsToTop}
+          getItemLayout={this.getItemLayout}
         />
 
         {this.renderStaticHeader()}

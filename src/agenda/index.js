@@ -4,6 +4,7 @@ import {
   View,
   Dimensions,
   Animated,
+  PixelRatio,
   ViewPropTypes,
   Platform
 } from "react-native";
@@ -17,6 +18,7 @@ import ReservationsList from "./reservation-list";
 
 import styleConstructor from "./style";
 import { VelocityTracker } from "../input";
+
 const os = Platform.OS;
 
 const HEADER_HEIGHT = os === "ios" ? 104 : 70;
@@ -126,7 +128,9 @@ export default class AgendaView extends Component {
   }
 
   calendarOffset() {
-    return 90 - this.viewHeight / 2;
+    return this.state.horizontal
+      ? -this.viewWidth / 2
+      : 90 - this.viewHeight / 2;
   }
 
   initialScrollPadPosition() {
@@ -149,6 +153,7 @@ export default class AgendaView extends Component {
   onLayout(event) {
     this.viewHeight = event.nativeEvent.layout.height;
     this.viewWidth = event.nativeEvent.layout.width;
+
     this.forceUpdate();
   }
 
@@ -193,6 +198,7 @@ export default class AgendaView extends Component {
     } else {
       this.disableCalendarScrolling();
     }
+
     this.forceUpdate();
   }
 
@@ -295,7 +301,9 @@ export default class AgendaView extends Component {
       });
     }
     this.setScrollPadPosition(this.initialScrollPadPosition(), true);
-    this.calendar.scrollToDay(day, this.calendarOffset(), true);
+    if (!this.state.horizontal) {
+      this.calendar.scrollToDay(day, this.calendarOffset(), true);
+    }
     if (this.props.loadItemsForMonth) {
       this.props.loadItemsForMonth(xdateToData(day));
     }
@@ -472,8 +480,8 @@ export default class AgendaView extends Component {
                 );
               }}
               horizontal={this.state.horizontal}
-              calendarHeight={this.state.horizontal ? 360 : 325}
-              calendarWidth={this.viewWidth}
+              calendarHeight={this.state.horizontal ? 360 : 350}
+              calendarWidth={this.state.horizontal ? 1400 : this.viewWidth}
               theme={this.props.theme}
               onVisibleMonthsChange={this.onVisibleMonthsChange.bind(this)}
               ref={c => (this.calendar = c)}

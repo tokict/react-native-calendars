@@ -194,9 +194,10 @@ class Calendar extends Component {
     return (
       <View
         style={{
-          flex: 1,
+          width: this.props.horizontal ? this.props.calendarWidth : null,
+          flex: this.props.horizontal ? 0 : 1,
           alignItems: "center",
-          marginLeft: isFirstInMonth ? 50 : null
+          marginLeft: isFirstInMonth && this.props.horizontal ? 50 : null
         }}
         key={id}
       >
@@ -297,7 +298,7 @@ class Calendar extends Component {
         style={[
           this.style.week,
           {
-            flex: this.props.horizontal ? 1 : null
+            flex: this.props.horizontal ? 1 : 0
           }
         ]}
         key={id}
@@ -308,13 +309,21 @@ class Calendar extends Component {
   }
 
   render() {
-    const days = dateutils.page(this.state.currentMonth, this.props.firstDay);
-    const weeks = [];
+    const days = dateutils.page(
+      this.state.currentMonth,
+      this.props.firstDay,
+      this.props.horizontal
+    );
+    let weeks = [];
 
-    while (this.props.horizontal ? days.length > 7 : days.length > 0) {
-      const d = days.splice(0, 7);
+    if (!this.props.horizontal) {
+      while (days.length) {
+        const d = days.splice(0, 7);
 
-      weeks.push(this.renderWeek(d, weeks.length));
+        weeks.push(this.renderWeek(d, weeks.length));
+      }
+    } else {
+      weeks = [this.renderWeek(days, weeks.length)];
     }
 
     let indicator;
@@ -333,6 +342,7 @@ class Calendar extends Component {
         indicator = true;
       }
     }
+    console;
     return this.props.horizontal ? (
       <View
         style={{
