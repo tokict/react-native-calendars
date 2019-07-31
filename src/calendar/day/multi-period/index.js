@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
-import PropTypes from 'prop-types';
-import {shouldUpdate} from '../../../component-updater';
+import React, { PureComponent } from "react";
+import { TouchableOpacity, Text, View } from "react-native";
+import PropTypes from "prop-types";
+import { shouldUpdate } from "../../../component-updater";
 
-import styleConstructor from './style';
+import styleConstructor from "./style";
 
-class Day extends Component {
+class Day extends PureComponent {
   static propTypes = {
     // TODO: disabled props should be removed
-    state: PropTypes.oneOf(['disabled', 'today', '']),
+    state: PropTypes.oneOf(["disabled", "today", ""]),
 
     // Specify theme properties to override specific styles for calendar parts. Default = {}
     theme: PropTypes.object,
     marking: PropTypes.any,
     onPress: PropTypes.func,
-    date: PropTypes.object,
+    date: PropTypes.object
   };
 
   constructor(props) {
@@ -28,7 +28,13 @@ class Day extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return shouldUpdate(this.props, nextProps, ['state', 'children', 'marking', 'onPress', 'onLongPress']);
+    return shouldUpdate(this.props, nextProps, [
+      "state",
+      "children",
+      "marking",
+      "onPress",
+      "onLongPress"
+    ]);
   }
 
   renderPeriods(marking) {
@@ -44,21 +50,21 @@ class Day extends Component {
         const style = [
           ...baseDotStyle,
           {
-            backgroundColor: period.color,
-          },
+            backgroundColor: period.color
+          }
         ];
         if (period.startingDay) {
           style.push({
             borderTopLeftRadius: 2,
             borderBottomLeftRadius: 2,
-            marginLeft: 4,
+            marginLeft: 4
           });
         }
         if (period.endingDay) {
           style.push({
             borderTopRightRadius: 2,
             borderBottomRightRadius: 2,
-            marginRight: 4,
+            marginRight: 4
           });
         }
         return <View key={index} style={style} />;
@@ -78,29 +84,35 @@ class Day extends Component {
       containerStyle.push(this.style.selected);
       textStyle.push(this.style.selectedText);
     } else if (
-      typeof marking.disabled !== 'undefined'
+      typeof marking.disabled !== "undefined"
         ? marking.disabled
-        : this.props.state === 'disabled'
+        : this.props.state === "disabled"
     ) {
       textStyle.push(this.style.disabledText);
-    } else if (this.props.state === 'today') {
+    } else if (this.props.state === "today") {
       containerStyle.push(this.style.today);
       textStyle.push(this.style.todayText);
     }
     return (
       <View
         style={{
-          alignSelf: 'stretch'
-        }}>
-        <TouchableOpacity testID={this.props.testID} style={containerStyle} onPress={this.onDayPress}>
+          alignSelf: "stretch"
+        }}
+      >
+        <TouchableOpacity
+          testID={this.props.testID}
+          style={containerStyle}
+          onPress={this.onDayPress}
+        >
           <Text allowFontScaling={false} style={textStyle}>
             {String(this.props.children)}
           </Text>
         </TouchableOpacity>
         <View
           style={{
-            alignSelf: 'stretch',
-          }}>
+            alignSelf: "stretch"
+          }}
+        >
           {periods}
         </View>
       </View>

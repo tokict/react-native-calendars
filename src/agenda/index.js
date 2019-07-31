@@ -459,7 +459,9 @@ export default class AgendaView extends Component {
           style={[
             headerStyle,
             {
-              backgroundColor: this.props.theme.calendarBackground,
+              backgroundColor: !this.state.calendarIsReady
+                ? "transparent"
+                : this.props.theme.calendarBackground,
               paddingTop: this.state.horizontal ? agendaHeight * 0.55 : 0
             }
           ]}

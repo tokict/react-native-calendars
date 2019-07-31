@@ -138,13 +138,11 @@ class CalendarList extends Component {
       this.props.calendarWidth / daysInMonth[daysInMonth.length - 1].getDate();
 
     const horizontalOffset = dayWidth * day.getDate() - (width + dayWidth) / 2;
-    console.debug(horizontalOffset);
+
     // Horizontal needs to count number of days and multiply it with their width to add to scroll instead of just making it half the calendar height
     let scrollAmount = this.props.horizontal
       ? size * this.props.pastScrollRange + diffMonths * size + horizontalOffset
       : size * this.props.pastScrollRange + diffMonths * size + (offset || 0);
-
-    console.debug(horizontalOffset);
 
     if (!this.props.horizontal) {
       let week = 0;

@@ -1,19 +1,15 @@
-import React, {Component} from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View
-} from 'react-native';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from "react";
+import { TouchableOpacity, Text, View } from "react-native";
+import PropTypes from "prop-types";
 
-import {shouldUpdate} from '../../../component-updater';
+import { shouldUpdate } from "../../../component-updater";
 
-import styleConstructor from './style';
+import styleConstructor from "./style";
 
-class Day extends Component {
+class Day extends PureComponent {
   static propTypes = {
     // TODO: disabled props should be removed
-    state: PropTypes.oneOf(['disabled', 'today', '']),
+    state: PropTypes.oneOf(["disabled", "today", ""]),
 
     // Specify theme properties to override specific styles for calendar parts. Default = {}
     theme: PropTypes.object,
@@ -39,18 +35,38 @@ class Day extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return shouldUpdate(this.props, nextProps, ['state', 'children', 'marking', 'onPress', 'onLongPress']);
+    return shouldUpdate(this.props, nextProps, [
+      "state",
+      "children",
+      "marking",
+      "onPress",
+      "onLongPress"
+    ]);
   }
 
   renderDots(marking) {
     const baseDotStyle = [this.style.dot, this.style.visibleDot];
-    if (marking.dots && Array.isArray(marking.dots) && marking.dots.length > 0) {
+    if (
+      marking.dots &&
+      Array.isArray(marking.dots) &&
+      marking.dots.length > 0
+    ) {
       // Filter out dots so that we we process only those items which have key and color property
-      const validDots = marking.dots.filter(d => (d && d.color));
+      const validDots = marking.dots.filter(d => d && d.color);
       return validDots.map((dot, index) => {
         return (
-          <View key={dot.key ? dot.key : index} style={[baseDotStyle,
-            { backgroundColor: marking.selected && dot.selectedDotColor ? dot.selectedDotColor : dot.color}]}/>
+          <View
+            key={dot.key ? dot.key : index}
+            style={[
+              baseDotStyle,
+              {
+                backgroundColor:
+                  marking.selected && dot.selectedDotColor
+                    ? dot.selectedDotColor
+                    : dot.color
+              }
+            ]}
+          />
         );
       });
     }
@@ -68,11 +84,15 @@ class Day extends Component {
       containerStyle.push(this.style.selected);
       textStyle.push(this.style.selectedText);
       if (marking.selectedColor) {
-        containerStyle.push({backgroundColor: marking.selectedColor});
+        containerStyle.push({ backgroundColor: marking.selectedColor });
       }
-    } else if (typeof marking.disabled !== 'undefined' ? marking.disabled : this.props.state === 'disabled') {
+    } else if (
+      typeof marking.disabled !== "undefined"
+        ? marking.disabled
+        : this.props.state === "disabled"
+    ) {
       textStyle.push(this.style.disabledText);
-    } else if (this.props.state === 'today') {
+    } else if (this.props.state === "today") {
       containerStyle.push(this.style.today);
       textStyle.push(this.style.todayText);
     }
@@ -81,9 +101,12 @@ class Day extends Component {
         testID={this.props.testID}
         style={containerStyle}
         onPress={this.onDayPress}
-        onLongPress={this.onDayLongPress}>
-        <Text allowFontScaling={false} style={textStyle}>{String(this.props.children)}</Text>
-        <View style={{flexDirection: 'row'}}>{dot}</View>
+        onLongPress={this.onDayLongPress}
+      >
+        <Text allowFontScaling={false} style={textStyle}>
+          {String(this.props.children)}
+        </Text>
+        <View style={{ flexDirection: "row" }}>{dot}</View>
       </TouchableOpacity>
     );
   }
